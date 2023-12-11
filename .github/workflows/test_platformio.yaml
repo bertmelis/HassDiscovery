@@ -1,0 +1,22 @@
+name: Test with Platformio
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Prepare
+        run: |
+          sudo apt update && sudo apt install -y valgrind
+          python -m pip install --upgrade pip
+          pip install platformio
+          pio pkg install --global --library bblanchon/ArduinoJson@^6.21.3
+      - name: Run test
+        run: |
+          pio test -e native -v
