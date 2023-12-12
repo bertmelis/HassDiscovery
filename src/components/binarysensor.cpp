@@ -8,7 +8,7 @@ the LICENSE file.
 
 #include "binarysensor.h"
 
-namespace HADiscovery {
+namespace HassDiscovery {
 
 BinarySensor::BinarySensor(const char* id)
 : Device(id) {
@@ -39,4 +39,4 @@ bool BinarySensor::_buildPayload(const char* name) {
   return true;
 }
 
-}  // end namespace HADiscovery
+}  // end namespace HassDiscovery

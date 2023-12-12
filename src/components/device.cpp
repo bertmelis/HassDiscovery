@@ -8,7 +8,7 @@ the LICENSE file.
 
 #include "device.h"
 
-namespace HADiscovery {
+namespace HassDiscovery {
 
 Device::Device(const char* id)
 : _topic(nullptr)
@@ -144,4 +144,4 @@ bool Device::_serializePayload() {
   return true;
 }
 
-}  // end namespace HADiscovery
+}  // end namespace HassDiscovery

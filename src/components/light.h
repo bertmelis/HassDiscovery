@@ -10,7 +10,7 @@ the LICENSE file.
 
 #include "device.h"
 
-namespace HADiscovery {
+namespace HassDiscovery {
 
 class Light : public Device {
  public:
@@ -25,4 +25,4 @@ class Light : public Device {
   void _prepareEffects();
 };
 
-}  // end namespace HADiscovery
+}  // end namespace HassDiscovery

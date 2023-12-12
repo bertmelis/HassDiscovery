@@ -27,9 +27,9 @@ the LICENSE file.
 #include <cstring>
 #include <ArduinoJson.h>
 
-#include "HADAbbreviations.h"
+#include "HassDAbbreviations.h"
 
-namespace HADiscovery {
+namespace HassDiscovery {
 
 constexpr size_t TOPICSIZE = HAD_TOPICSIZE;
 constexpr size_t PAYLOADSIZE = HAD_PAYLOADSIZE;
@@ -60,4 +60,4 @@ class Device {
   bool _serializePayload();
 };
 
-}  // end namespace HADiscovery
+}  // end namespace HassDiscovery

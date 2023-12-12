@@ -10,7 +10,7 @@ the LICENSE file.
 
 #include "device.h"
 
-namespace HADiscovery {
+namespace HassDiscovery {
 
 class BinarySensor : public Device {
  public:
@@ -21,4 +21,4 @@ class BinarySensor : public Device {
   bool _buildPayload(const char* name);
 };
 
-}  // end namespace HADiscovery
+}  // end namespace HassDiscovery

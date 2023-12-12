@@ -8,7 +8,7 @@ the LICENSE file.
 
 #include "light.h"
 
-namespace HADiscovery {
+namespace HassDiscovery {
 
 Light::Light(const char* id)
 : Device(id) {
@@ -67,4 +67,4 @@ void Light::_prepareEffects() {
   }
 }
 
-}  // end namespace HADiscovery
+}  // end namespace HassDiscovery
