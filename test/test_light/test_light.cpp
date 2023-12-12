@@ -8,13 +8,13 @@ the LICENSE file.
 
 #include <unity.h>
 
-#include <HADiscovery.h>
+#include <HassDiscovery.h>
 
 void setUp() {}
 void tearDown() {}
 
 void test_light() {
-  HADiscovery::Light device("myuniqueid");
+  HassDiscovery::Light device("myuniqueid");
   const char* expectedTopic = "homeassistant/light/myuniqueid/config";
   const char* expectedPayload = R"foo({"~":"basetopic/myuniqueid","name":null,"uniq_id":"myuniqueid","opt":false,"avty":[{"t":"~/$system/status","pl_avail":"online","pl_not_avail":"offline"}],"avty_mode":"latest","dev":{"ids":["myuniqueid"]},"stat_t":"~/state","cmd_t":"~/state/set","pl_on":1,"pl_off":0,"qos":2,"ret":true})foo";
 
@@ -24,7 +24,7 @@ void test_light() {
 }
 
 void test_rgblight() {
-  HADiscovery::Light device("myuniqueid");
+  HassDiscovery::Light device("myuniqueid");
   device.addRGB();
   const char* expectedTopic = "homeassistant/light/myuniqueid/config";
   const char* expectedPayload = R"foo({"rgb_stat_t":"~/rgb","rgb_cmd_t":"~/rgb/set","on_cmd_type":"last","~":"basetopic/myuniqueid","name":null,"uniq_id":"myuniqueid","opt":false,"avty":[{"t":"~/$system/status","pl_avail":"online","pl_not_avail":"offline"}],"avty_mode":"latest","dev":{"ids":["myuniqueid"]},"stat_t":"~/state","cmd_t":"~/state/set","pl_on":1,"pl_off":0,"qos":2,"ret":true})foo";
@@ -35,7 +35,7 @@ void test_rgblight() {
 }
 
 void test_effect1light() {
-  HADiscovery::Light device("myuniqueid");
+  HassDiscovery::Light device("myuniqueid");
   const char* effects[] = {
     "rainbow",
     "snake",
@@ -51,7 +51,7 @@ void test_effect1light() {
 }
 
 void test_effect2light() {
-  HADiscovery::Light device("myuniqueid");
+  HassDiscovery::Light device("myuniqueid");
   device.addEffect("rainbow");
   device.addEffect("snake");
   device.addEffect("blink");
