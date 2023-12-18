@@ -17,7 +17,7 @@ Sensor::Sensor(const char* id)
 
 bool Sensor::create(const char* name) {
   if (!_buildTopic("sensor/") ||
-      !_buildBasicPayload() ||
+      !_buildBasicPayload(name) ||
       !_buildPayload(name) ||
       !_serializePayload()) {
     return false;

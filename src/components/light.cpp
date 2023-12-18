@@ -39,9 +39,9 @@ void Light::addEffects(const char** effectList, size_t nrEffects) {
   }
 }
 
-bool Light::create() {
+bool Light::create(const char* name) {
   if (!_buildTopic("light/") ||
-      !_buildBasicPayload() ||
+      !_buildBasicPayload(name) ||
       !_buildPayload() ||
       !_serializePayload()) {
     return false;

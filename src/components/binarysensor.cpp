@@ -17,7 +17,7 @@ BinarySensor::BinarySensor(const char* id)
 
 bool BinarySensor::create(const char* name) {
   if (!_buildTopic("binary_sensor/") ||
-      !_buildBasicPayload() ||
+      !_buildBasicPayload(name) ||
       !_buildPayload(name) ||
       !_serializePayload()) {
     return false;

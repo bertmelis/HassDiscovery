@@ -90,7 +90,7 @@ bool Device::_buildTopic(const char* component) {
   return true;
 }
 
-bool Device::_buildBasicPayload() {
+bool Device::_buildBasicPayload(const char* name) {
   // build base topic
   size_t baseTopicLength = strlen(BASETOPIC);
   size_t idLength = strlen(_id);
@@ -103,7 +103,7 @@ bool Device::_buildBasicPayload() {
   free(baseTopic);
 
   // fill properties
-  _json[HADISCOVERY_NAME] = nullptr;
+  _json[HADISCOVERY_NAME] = name;
   _json[HADISCOVERY_UNIQUE_ID] = _id;
   _json[HADISCOVERY_OPTIMISTIC] = false;
   JsonObject availability0  = _json[HADISCOVERY_AVAILABILITY].createNestedObject();

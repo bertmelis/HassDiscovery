@@ -18,7 +18,7 @@ class Light : public Device {
   void addRGB();
   void addEffect(const char* effect);
   void addEffects(const char** effectList, size_t nrEffects);
-  bool create();
+  bool create(const char* name);
 
  protected:
   bool _buildPayload();

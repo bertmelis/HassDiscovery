@@ -55,8 +55,7 @@ class Device {
   StaticJsonDocument<HAD_JSONDOCSIZE> _json;
 
   bool _buildTopic(const char* component);
-  bool _buildBasicPayload();
-  bool _buildPayloadLight();
+  bool _buildBasicPayload(const char* name);
   bool _serializePayload();
 };
 
