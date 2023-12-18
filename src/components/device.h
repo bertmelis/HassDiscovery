@@ -21,7 +21,7 @@ the LICENSE file.
 #endif
 
 #ifndef HAD_BASETOPIC
-#define HAD_BASETOPIC "homeassistant/"
+#define HAD_BASETOPIC "basetopic/"
 #endif
 
 #ifndef HAD_DISCOVERYTOPIC
