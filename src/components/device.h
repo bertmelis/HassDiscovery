@@ -21,7 +21,11 @@ the LICENSE file.
 #endif
 
 #ifndef HAD_BASETOPIC
-#define HAD_BASETOPIC "basetopic/"
+#define HAD_BASETOPIC "homeassistant/"
+#endif
+
+#ifndef HAD_DISCOVERYTOPIC
+#define HAD_DISCOVERYTOPIC "homeassistant/"
 #endif
 
 #include <cstring>
@@ -34,6 +38,7 @@ namespace HassDiscovery {
 constexpr size_t TOPICSIZE = HAD_TOPICSIZE;
 constexpr size_t PAYLOADSIZE = HAD_PAYLOADSIZE;
 constexpr const char* BASETOPIC = HAD_BASETOPIC;
+constexpr const char* DISCOVERYTOPICPREFIX = HAD_DISCOVERYTOPIC;
 
 class Device {
  public:

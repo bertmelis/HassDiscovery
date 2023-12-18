@@ -48,11 +48,10 @@ StaticJsonDocument<HAD_JSONDOCSIZE>& Device::json() {
 
 bool Device::_buildTopic(const char* component) {
   // topic: <discovery_prefix>/<component>/<object_id>/config
-  const char* prefix = "homeassistant/";
-  const char* suffix = "/config";
+  constexpr const char* suffix = "/config";
 
   // adjust topic buffer
-  size_t neededLen = strlen(prefix) + strlen(component) + strlen(_id) + strlen(suffix) + 1;
+  size_t neededLen = strlen(DISCOVERYTOPICPREFIX) + strlen(component) + strlen(_id) + strlen(suffix) + 1;
   if (neededLen > _topicSize) {
     _topicSize = neededLen;
     char* newBuffer = _topic;
@@ -70,8 +69,8 @@ bool Device::_buildTopic(const char* component) {
 
   // build topic string
   size_t index = 0;
-  size_t length = strlen(prefix);
-  std::memcpy(&_topic[index], prefix, length);
+  size_t length = strlen(DISCOVERYTOPICPREFIX);
+  std::memcpy(&_topic[index], DISCOVERYTOPICPREFIX, length);
 
   index += length;
   length = strlen(component);
