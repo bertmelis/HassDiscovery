@@ -16,7 +16,7 @@ void tearDown() {}
 void test_extraProps() {
   HassDiscovery::BinarySensor device("deviceid", "devicename");
   const char* expectedTopic = "homeassistant/binary_sensor/deviceid_sensorid/config";
-  const char* expectedPayload = R"foo({"ic":"mdi:lightbulb","~":"basetopic/deviceid","name":"sensorname","uniq_id":"deviceid_sensorid","opt":false,"avty":[{"t":"~/$system/status","pl_avail":"online","pl_not_avail":"offline"}],"avty_mode":"latest","dev":{"ids":["deviceid"],"name":"devicename"},"stat_t":"~/sensorid","pl_on":1,"pl_off":0})foo";
+  const char* expectedPayload = R"foo({"ic":"mdi:lightbulb","~":"basetopic/deviceid","name":"sensorname","uniq_id":"deviceid_sensorid","opt":false,"avty":[{"t":"~/$system/status","pl_avail":"online","pl_not_avail":"offline"}],"avty_mode":"latest","dev":{"ids":["deviceid"],"name":"devicename"},"stat_t":"~/sensorid","pl_on":"1","pl_off":"0"})foo";
 
   device.json()[HADISCOVERY_ICON] = "mdi:lightbulb";
 
