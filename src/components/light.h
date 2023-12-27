@@ -14,15 +14,22 @@ namespace HassDiscovery {
 
 class Light : public Device {
  public:
-  explicit Light(const char* id);
+  explicit Light(const char* deviceId, const char* deviceName = nullptr);
+  ~Light();
   void addRGB();
   void addEffect(const char* effect);
   void addEffects(const char** effectList, size_t nrEffects);
-  bool create(const char* name);
+  bool create(const char* lightId, const char* lightName = nullptr);
 
  protected:
-  bool _buildPayload();
-  void _prepareEffects();
+  bool _buildPayload(const char* id);
+  bool _addRGB(const char* id);
+  bool _addEffects(const char* id);
+  bool _generateTopic(const char* id, const char* suffix);
+
+  char* _topicBuffer;
+  bool _rgb;
+  bool _effects;
 };
 
 }  // end namespace HassDiscovery

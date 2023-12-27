@@ -10,12 +10,13 @@ the LICENSE file.
 
 namespace HassDiscovery {
 
-Device::Device(const char* id)
+Device::Device(const char* deviceId, const char* deviceName)
 : _topic(nullptr)
 , _topicSize(0)
 , _payload(nullptr)
 , _payloadSize(0)
-, _id(id)
+, _deviceId(deviceId)
+, _deviceName(deviceName)
 , _json() {
   _topic = reinterpret_cast<char*>(malloc(TOPICSIZE));
   if (_topic) {
@@ -46,12 +47,13 @@ StaticJsonDocument<HAD_JSONDOCSIZE>& Device::json() {
   return _json;
 }
 
-bool Device::_buildTopic(const char* component) {
+bool Device::_buildTopic(const char* componentType, const char* id) {
   // topic: <discovery_prefix>/<component>/<object_id>/config
+  // object_id = "deviceId_objectId"
   constexpr const char* suffix = "/config";
 
   // adjust topic buffer
-  size_t neededLen = strlen(DISCOVERYTOPICPREFIX) + strlen(component) + strlen(_id) + strlen(suffix) + 1;
+  size_t neededLen = strlen(DISCOVERYTOPICPREFIX) + strlen(componentType) + strlen(_deviceId) + 1 + strlen(id) + strlen(suffix) + 1;
   if (neededLen > _topicSize) {
     _topicSize = neededLen;
     char* newBuffer = _topic;
@@ -73,12 +75,20 @@ bool Device::_buildTopic(const char* component) {
   std::memcpy(&_topic[index], DISCOVERYTOPICPREFIX, length);
 
   index += length;
-  length = strlen(component);
-  std::memcpy(&_topic[index], component, length);
+  length = strlen(componentType);
+  std::memcpy(&_topic[index], componentType, length);
 
   index += length;
-  length = strlen(_id);
-  std::memcpy(&_topic[index], _id, length);
+  length = strlen(_deviceId);
+  std::memcpy(&_topic[index], _deviceId, length);
+
+  index += length;
+  length = 1;
+  std::memcpy(&_topic[index], "_", length);
+
+  index += length;
+  length = strlen(id);
+  std::memcpy(&_topic[index], id, length);
 
   index += length;
   length = strlen(suffix);
@@ -89,21 +99,33 @@ bool Device::_buildTopic(const char* component) {
   return true;
 }
 
-bool Device::_buildBasicPayload(const char* name) {
+bool Device::_buildStandardPayload(const char* id, const char* name) {
   // build base topic
   size_t baseTopicLength = strlen(BASETOPIC);
-  size_t idLength = strlen(_id);
-  char* baseTopic = reinterpret_cast<char*>(malloc(baseTopicLength + idLength + 1));
+  size_t deviceIdLength = strlen(_deviceId);
+  char* baseTopic = reinterpret_cast<char*>(malloc(baseTopicLength + deviceIdLength + 1));
   if (!baseTopic) return false;
   std::memcpy(&baseTopic[0], BASETOPIC, baseTopicLength);
-  std::memcpy(&baseTopic[baseTopicLength], _id, idLength);
-  baseTopic[baseTopicLength + idLength] = '\0';
+  std::memcpy(&baseTopic[baseTopicLength], _deviceId, deviceIdLength);
+  baseTopic[baseTopicLength + deviceIdLength] = '\0';
   _json[HADISCOVERY_BASETOPIC] = baseTopic;
   free(baseTopic);
 
-  // fill properties
-  _json[HADISCOVERY_NAME] = name;
-  _json[HADISCOVERY_UNIQUE_ID] = _id;
+  // fill standard properties
+  if (name) {
+    _json[HADISCOVERY_NAME] = name;
+  }
+
+  size_t idLength = strlen(id);
+  char* completeId = reinterpret_cast<char*>(malloc(deviceIdLength + 1 + idLength + 1));
+  if (!completeId) return false;
+  std::memcpy(&completeId[0], _deviceId, deviceIdLength);
+  std::memcpy(&completeId[deviceIdLength], "_", 1);
+  std::memcpy(&completeId[deviceIdLength + 1], id, idLength);
+  completeId[deviceIdLength + 1 + idLength] = '\0';
+  _json[HADISCOVERY_UNIQUE_ID] = completeId;
+  free(completeId);
+
   _json[HADISCOVERY_OPTIMISTIC] = false;
   JsonObject availability0  = _json[HADISCOVERY_AVAILABILITY].createNestedObject();
   availability0[HADISCOVERY_TOPIC] = "~/$system/status";
@@ -111,7 +133,10 @@ bool Device::_buildBasicPayload(const char* name) {
   availability0[HADISCOVERY_PAYLOAD_NOT_AVAILABLE] = "offline";
   _json[HADISCOVERY_AVAILABILITY_MODE] = "latest";
   JsonObject device = _json.createNestedObject(HADISCOVERY_DEVICE);
-  device[HADISCOVERY_DEVICE_IDENTIFIERS][0] = _id;
+  device[HADISCOVERY_DEVICE_IDENTIFIERS][0] = _deviceId;
+  if (_deviceName) {
+    device[HADISCOVERY_NAME] = _deviceName;
+  }
   return true;
 }
 

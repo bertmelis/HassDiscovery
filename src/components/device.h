@@ -42,7 +42,7 @@ constexpr const char* DISCOVERYTOPICPREFIX = HAD_DISCOVERYTOPIC;
 
 class Device {
  public:
-  explicit Device(const char* id);
+  Device(const char* deviceId, const char* deviceName);
   ~Device();
   Device (const Device&) = delete;
   Device& operator= (const Device&) = delete;
@@ -56,11 +56,12 @@ class Device {
   size_t _topicSize;
   char* _payload;
   size_t _payloadSize;
-  const char* _id;
+  const char* _deviceId;
+  const char* _deviceName;
   StaticJsonDocument<HAD_JSONDOCSIZE> _json;
 
-  bool _buildTopic(const char* component);
-  bool _buildBasicPayload(const char* name);
+  bool _buildTopic(const char* componentType, const char* id);
+  bool _buildStandardPayload(const char* id, const char* name);
   bool _serializePayload();
 };
 

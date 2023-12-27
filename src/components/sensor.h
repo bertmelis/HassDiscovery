@@ -14,11 +14,11 @@ namespace HassDiscovery {
 
 class Sensor : public Device {
  public:
-  explicit Sensor(const char* id);
-  bool create(const char* name);
+  explicit Sensor(const char* deviceId, const char* deviceName = nullptr);
+  bool create(const char* sensorId, const char* sensorName = nullptr);
 
  protected:
-  bool _buildPayload(const char* name);
+  bool _buildPayload(const char* id);
 };
 
 }  // end namespace HassDiscovery

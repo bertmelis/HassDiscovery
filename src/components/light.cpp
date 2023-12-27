@@ -10,19 +10,24 @@ the LICENSE file.
 
 namespace HassDiscovery {
 
-Light::Light(const char* id)
-: Device(id) {
+Light::Light(const char* deviceId, const char* deviceName)
+: Device(deviceId, deviceName)
+, _topicBuffer(nullptr)
+, _rgb(false)
+, _effects(false) {
   // empty
 }
 
+Light::~Light() {
+  free(_topicBuffer);
+}
+
 void Light::addRGB() {
-  _json[HADISCOVERY_RGB_STATE_TOPIC] = "~/rgb";
-  _json[HADISCOVERY_RGB_COMMAND_TOPIC] = "~/rgb/set";
-  _json[HADISCOVERY_ON_COMMAND_TYPE] = "last";  // last: style first, state last; first: state first, style last
+  _rgb = true;
 }
 
 void Light::addEffect(const char* effect) {
-  _prepareEffects();
+  _effects = true;
   if (!_json[HADISCOVERY_EFFECT_LIST]) {
     JsonArray effects = _json.createNestedArray(HADISCOVERY_EFFECT_LIST);
     effects.add(effect);
@@ -32,26 +37,30 @@ void Light::addEffect(const char* effect) {
 }
 
 void Light::addEffects(const char** effectList, size_t nrEffects) {
-  _prepareEffects();
+  _effects = true;
   JsonArray effects = _json.createNestedArray(HADISCOVERY_EFFECT_LIST);
   for (size_t i = 0; i < nrEffects; ++i) {
     effects.add(effectList[i]);
   }
 }
 
-bool Light::create(const char* name) {
-  if (!_buildTopic("light/") ||
-      !_buildBasicPayload(name) ||
-      !_buildPayload() ||
+bool Light::create(const char* lightId, const char* lightName) {
+  if (!_buildTopic("light/", lightId) ||
+      !_buildStandardPayload(lightId, lightName) ||
+      !_buildPayload(lightId) ||
       !_serializePayload()) {
     return false;
   }
   return true;
 }
 
-bool Light::_buildPayload() {
-  _json[HADISCOVERY_STATE_TOPIC] = "~/state";
-  _json[HADISCOVERY_COMMAND_TOPIC] = "~/state/set";
+bool Light::_buildPayload(const char* id) {
+  if (_rgb && !_addRGB(id)) return false;
+  if (_effects && !_addEffects(id)) return false;
+  if (!_generateTopic(id, "/state")) return false;
+  _json[HADISCOVERY_STATE_TOPIC] = _topicBuffer;
+  if (!_generateTopic(id, "/state/set")) return false;
+  _json[HADISCOVERY_COMMAND_TOPIC] = _topicBuffer;
   _json[HADISCOVERY_PAYLOAD_ON] = 1;
   _json[HADISCOVERY_PAYLOAD_OFF] = 0;
   _json["qos"] = 2;
@@ -59,12 +68,42 @@ bool Light::_buildPayload() {
   return true;
 }
 
-void Light::_prepareEffects() {
+bool Light::_addRGB(const char* id) {
+  if (!_generateTopic(id, "/rgb")) return false;
+  _json[HADISCOVERY_RGB_STATE_TOPIC] = _topicBuffer;
+  if (!_generateTopic(id, "/rgb/set")) return false;
+  _json[HADISCOVERY_RGB_COMMAND_TOPIC] = _topicBuffer;
+  _json[HADISCOVERY_ON_COMMAND_TYPE] = "last";  // last: style first, state last; first: state first, style last
+  return true;
+}
+
+bool Light::_addEffects(const char* id) {
   if (!_json[HADISCOVERY_EFFECT_STATE_TOPIC]) {
-    _json[HADISCOVERY_EFFECT_STATE_TOPIC] = "~/effect";
-    _json[HADISCOVERY_EFFECT_COMMAND_TOPIC] = "~/effect/set";
+    if (!_generateTopic(id, "/effect")) return false;
+    _json[HADISCOVERY_EFFECT_STATE_TOPIC] = _topicBuffer;
+    if (!_generateTopic(id, "/effect/set")) return false;
+    _json[HADISCOVERY_EFFECT_COMMAND_TOPIC] = _topicBuffer;
     _json[HADISCOVERY_ON_COMMAND_TYPE] = "last";  // last: style first, state last; first: state first, style last
   }
+  return true;
+}
+
+bool Light::_generateTopic(const char* id, const char* suffix) {
+  // ~/id/suffix for example ~/lightid/rgb/set
+  size_t idLength = strlen(id);
+  size_t suffixLength = strlen(suffix);
+  if (_topicBuffer) free(_topicBuffer);
+  _topicBuffer = reinterpret_cast<char*>(malloc(2 + idLength + suffixLength + 1));
+  if (!_topicBuffer) return false;
+  size_t index = 0;
+  std::memcpy(&_topicBuffer[index], "~/", 2);
+  index += 2;
+  std::memcpy(&_topicBuffer[index], id, idLength);
+  index += idLength;
+  std::memcpy(&_topicBuffer[index], suffix, suffixLength);
+  index += suffixLength;
+  _topicBuffer[index] = '\0';
+  return true;
 }
 
 }  // end namespace HassDiscovery

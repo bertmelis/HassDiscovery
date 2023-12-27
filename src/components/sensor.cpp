@@ -10,27 +10,27 @@ the LICENSE file.
 
 namespace HassDiscovery {
 
-Sensor::Sensor(const char* id)
-: Device(id) {
+Sensor::Sensor(const char* deviceId, const char* deviceName)
+: Device(deviceId, deviceName) {
   // empty
 }
 
-bool Sensor::create(const char* name) {
-  if (!_buildTopic("sensor/") ||
-      !_buildBasicPayload(name) ||
-      !_buildPayload(name) ||
+bool Sensor::create(const char* sensorId, const char* sensorName) {
+  if (!_buildTopic("sensor/", sensorId) ||
+      !_buildStandardPayload(sensorId, sensorName) ||
+      !_buildPayload(sensorId) ||
       !_serializePayload()) {
     return false;
   }
   return true;
 }
 
-bool Sensor::_buildPayload(const char* name) {
-  size_t length = strlen(name);
+bool Sensor::_buildPayload(const char* id) {
+  size_t length = strlen(id);
   char* topic = reinterpret_cast<char*>(malloc(2 + length + 1));
   if (!topic) return false;
   std::memcpy(&topic[0], "~/", 2);
-  std::memcpy(&topic[2], name, length);
+  std::memcpy(&topic[2], id, length);
   topic[2 + length] = '\0';
   _json[HADISCOVERY_STATE_TOPIC] = topic;
   free(topic);
