@@ -34,8 +34,8 @@ bool BinarySensor::_buildPayload(const char* id) {
   topic[2 + length] = '\0';
   _json[HADISCOVERY_STATE_TOPIC] = topic;
   free(topic);
-  _json[HADISCOVERY_PAYLOAD_ON] = 1;
-  _json[HADISCOVERY_PAYLOAD_OFF] = 0;
+  _json[HADISCOVERY_PAYLOAD_ON] = "on";
+  _json[HADISCOVERY_PAYLOAD_OFF] = "off";
   return true;
 }
 
