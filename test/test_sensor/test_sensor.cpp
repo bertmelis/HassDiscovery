@@ -33,9 +33,21 @@ void test_sensor() {
   TEST_ASSERT_EQUAL_STRING (expectedPayload, device.payload());
 }
 
+void test_systemsensor() {
+  HassDiscovery::Sensor device("deviceid", "devicename");
+  const char* expectedTopic = "homeassistant/sensor/deviceid_sensorid/config";
+  const char* expectedPayload = R"foo({"~":"basetopic/deviceid","name":"sensorname","uniq_id":"deviceid_sensorid","opt":false,"avty":[{"t":"~/$system/status","pl_avail":"online","pl_not_avail":"offline"}],"avty_mode":"latest","dev":{"ids":["deviceid"],"name":"devicename"},"stat_t":"~/$system/sensorid"})foo";
+  device.setSystem();
+
+  TEST_ASSERT_TRUE(device.create("sensorid", "sensorname"));
+  TEST_ASSERT_EQUAL_STRING (expectedTopic, device.topic());
+  TEST_ASSERT_EQUAL_STRING (expectedPayload, device.payload());
+}
+
 int main() {
   UNITY_BEGIN();
   RUN_TEST(test_binarysensor);
   RUN_TEST(test_sensor);
+  RUN_TEST(test_systemsensor);
   return UNITY_END();
 }
