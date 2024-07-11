@@ -35,10 +35,10 @@ the LICENSE file.
 
 namespace HassDiscovery {
 
-constexpr size_t TOPICSIZE = HAD_TOPICSIZE;
-constexpr size_t PAYLOADSIZE = HAD_PAYLOADSIZE;
-constexpr const char* BASETOPIC = HAD_BASETOPIC;
-constexpr const char* DISCOVERYTOPICPREFIX = HAD_DISCOVERYTOPIC;
+constexpr size_t had_topicSize = HAD_TOPICSIZE;
+constexpr size_t had_payloadSize = HAD_PAYLOADSIZE;
+constexpr const char* had_baseTopic = HAD_BASETOPIC;
+constexpr const char* had_discoveryTopicPrefix = HAD_DISCOVERYTOPIC;
 
 class Device {
  public:

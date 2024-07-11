@@ -18,13 +18,13 @@ Device::Device(const char* deviceId, const char* deviceName)
 , _deviceId(deviceId)
 , _deviceName(deviceName)
 , _json() {
-  _topic = reinterpret_cast<char*>(malloc(TOPICSIZE));
+  _topic = reinterpret_cast<char*>(malloc(had_topicSize));
   if (_topic) {
-    _topicSize = TOPICSIZE;
+    _topicSize = had_topicSize;
   }
-  _payload = reinterpret_cast<char*>(malloc(PAYLOADSIZE));
+  _payload = reinterpret_cast<char*>(malloc(had_payloadSize));
   if (_payload) {
-    _payloadSize = PAYLOADSIZE;
+    _payloadSize = had_payloadSize;
   }
 }
 
@@ -53,7 +53,7 @@ bool Device::_buildTopic(const char* componentType, const char* id) {
   constexpr const char* suffix = "/config";
 
   // adjust topic buffer
-  size_t neededLen = strlen(DISCOVERYTOPICPREFIX) + strlen(componentType) + strlen(_deviceId) + 1 + strlen(id) + strlen(suffix) + 1;
+  size_t neededLen = strlen(had_discoveryTopicPrefix) + strlen(componentType) + strlen(_deviceId) + 1 + strlen(id) + strlen(suffix) + 1;
   if (neededLen > _topicSize) {
     _topicSize = neededLen;
     char* newBuffer = _topic;
@@ -71,8 +71,8 @@ bool Device::_buildTopic(const char* componentType, const char* id) {
 
   // build topic string
   size_t index = 0;
-  size_t length = strlen(DISCOVERYTOPICPREFIX);
-  std::memcpy(&_topic[index], DISCOVERYTOPICPREFIX, length);
+  size_t length = strlen(had_discoveryTopicPrefix);
+  std::memcpy(&_topic[index], had_discoveryTopicPrefix, length);
 
   index += length;
   length = strlen(componentType);
@@ -101,11 +101,11 @@ bool Device::_buildTopic(const char* componentType, const char* id) {
 
 bool Device::_buildStandardPayload(const char* id, const char* name) {
   // build base topic
-  size_t baseTopicLength = strlen(BASETOPIC);
+  size_t baseTopicLength = strlen(had_baseTopic);
   size_t deviceIdLength = strlen(_deviceId);
   char* baseTopic = reinterpret_cast<char*>(malloc(baseTopicLength + deviceIdLength + 1));
   if (!baseTopic) return false;
-  std::memcpy(&baseTopic[0], BASETOPIC, baseTopicLength);
+  std::memcpy(&baseTopic[0], had_baseTopic, baseTopicLength);
   std::memcpy(&baseTopic[baseTopicLength], _deviceId, deviceIdLength);
   baseTopic[baseTopicLength + deviceIdLength] = '\0';
   _json[HADISCOVERY_BASETOPIC] = baseTopic;
