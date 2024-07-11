@@ -49,7 +49,7 @@ class Device {
 
   const char* topic() const;
   const char* payload() const;
-  StaticJsonDocument<HAD_JSONDOCSIZE>& json();
+  JsonDocument& json();
 
  protected:
   char* _topic;
@@ -58,7 +58,7 @@ class Device {
   size_t _payloadSize;
   const char* _deviceId;
   const char* _deviceName;
-  StaticJsonDocument<HAD_JSONDOCSIZE> _json;
+  JsonDocument _json;
 
   bool _buildTopic(const char* componentType, const char* id);
   bool _buildStandardPayload(const char* id, const char* name);

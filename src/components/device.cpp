@@ -43,7 +43,7 @@ const char* Device::payload() const {
   return _payload;
 }
 
-StaticJsonDocument<HAD_JSONDOCSIZE>& Device::json() {
+JsonDocument& Device::json() {
   return _json;
 }
 
@@ -127,12 +127,12 @@ bool Device::_buildStandardPayload(const char* id, const char* name) {
   free(completeId);
 
   _json[HADISCOVERY_OPTIMISTIC] = false;
-  JsonObject availability0  = _json[HADISCOVERY_AVAILABILITY].createNestedObject();
+  JsonObject availability0  = _json[HADISCOVERY_AVAILABILITY].add<JsonObject>();
   availability0[HADISCOVERY_TOPIC] = "~/$system/status";
   availability0[HADISCOVERY_PAYLOAD_AVAILABLE] = "online";
   availability0[HADISCOVERY_PAYLOAD_NOT_AVAILABLE] = "offline";
   _json[HADISCOVERY_AVAILABILITY_MODE] = "latest";
-  JsonObject device = _json.createNestedObject(HADISCOVERY_DEVICE);
+  JsonObject device = _json[HADISCOVERY_DEVICE].to<JsonObject>();
   device[HADISCOVERY_DEVICE_IDENTIFIERS][0] = _deviceId;
   if (_deviceName) {
     device[HADISCOVERY_NAME] = _deviceName;
