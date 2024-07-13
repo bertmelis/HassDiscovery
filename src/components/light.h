@@ -17,6 +17,7 @@ class Light : public Device {
   explicit Light(const char* deviceId, const char* deviceName = nullptr);
   ~Light();
   void addRGB();
+  void addBrightness();
   void addEffect(const char* effect);
   void addEffects(const char** effectList, size_t nrEffects);
   bool create(const char* lightId, const char* lightName = nullptr);
@@ -24,11 +25,13 @@ class Light : public Device {
  protected:
   bool _buildPayload(const char* id);
   bool _addRGB(const char* id);
+  bool _addBrightness(const char* id);
   bool _addEffects(const char* id);
   bool _generateTopic(const char* id, const char* suffix);
 
   char* _topicBuffer;
   bool _rgb;
+  bool _brightness;
   bool _effects;
 };
 

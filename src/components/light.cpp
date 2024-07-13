@@ -14,6 +14,7 @@ Light::Light(const char* deviceId, const char* deviceName)
 : Device(deviceId, deviceName)
 , _topicBuffer(nullptr)
 , _rgb(false)
+, _brightness(false)
 , _effects(false) {
   // empty
 }
@@ -24,6 +25,10 @@ Light::~Light() {
 
 void Light::addRGB() {
   _rgb = true;
+}
+
+void Light::addBrightness() {
+  _brightness = true;
 }
 
 void Light::addEffect(const char* effect) {
@@ -56,6 +61,7 @@ bool Light::create(const char* lightId, const char* lightName) {
 
 bool Light::_buildPayload(const char* id) {
   if (_rgb && !_addRGB(id)) return false;
+  if (_brightness && !_addBrightness(id)) return false;
   if (_effects && !_addEffects(id)) return false;
   if (!_generateTopic(id, "/state")) return false;
   _json[HADISCOVERY_STATE_TOPIC] = _topicBuffer;
@@ -73,6 +79,15 @@ bool Light::_addRGB(const char* id) {
   _json[HADISCOVERY_RGB_STATE_TOPIC] = _topicBuffer;
   if (!_generateTopic(id, "/rgb/set")) return false;
   _json[HADISCOVERY_RGB_COMMAND_TOPIC] = _topicBuffer;
+  _json[HADISCOVERY_ON_COMMAND_TYPE] = "last";  // last: style first, state last; first: state first, style last
+  return true;
+}
+
+bool Light::_addBrightness(const char* id) {
+  if (!_generateTopic(id, "/brightness")) return false;
+  _json[HADISCOVERY_BRIGHTNESS_STATE_TOPIC] = _topicBuffer;
+  if (!_generateTopic(id, "/brightness/set")) return false;
+  _json[HADISCOVERY_BRIGHTNESS_COMMAND_TOPIC] = _topicBuffer;
   _json[HADISCOVERY_ON_COMMAND_TYPE] = "last";  // last: style first, state last; first: state first, style last
   return true;
 }
