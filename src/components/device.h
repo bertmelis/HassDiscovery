@@ -13,11 +13,7 @@ the LICENSE file.
 #endif
 
 #ifndef HAD_PAYLOADSIZE
-#define HAD_PAYLOADSIZE 512
-#endif
-
-#ifndef HAD_JSONDOCSIZE
-#define HAD_JSONDOCSIZE 1024
+#define HAD_PAYLOADSIZE 1024
 #endif
 
 #ifndef HAD_BASETOPIC
