@@ -29,7 +29,7 @@ void Light::addRGB() {
 void Light::addEffect(const char* effect) {
   _effects = true;
   if (!_json[HADISCOVERY_EFFECT_LIST]) {
-    JsonArray effects = _json.createNestedArray(HADISCOVERY_EFFECT_LIST);
+    JsonArray effects = _json[HADISCOVERY_EFFECT_LIST].to<JsonArray>();
     effects.add(effect);
   } else {
     _json[HADISCOVERY_EFFECT_LIST].add(effect);
@@ -38,7 +38,7 @@ void Light::addEffect(const char* effect) {
 
 void Light::addEffects(const char** effectList, size_t nrEffects) {
   _effects = true;
-  JsonArray effects = _json.createNestedArray(HADISCOVERY_EFFECT_LIST);
+  JsonArray effects = _json[HADISCOVERY_EFFECT_LIST].to<JsonArray>();
   for (size_t i = 0; i < nrEffects; ++i) {
     effects.add(effectList[i]);
   }
